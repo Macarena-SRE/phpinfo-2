@@ -7,7 +7,7 @@ jobs:
   docker: 
     runs-on: ubuntu-18.04
     steps:
-    - name: checkeout
+    - name: checkout
       uses: action/checkout@v2
     - name: test
       run:
