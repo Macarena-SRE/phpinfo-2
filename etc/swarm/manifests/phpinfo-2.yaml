@@ -1,0 +1,33 @@
+networks:
+  phpinfo-2:
+    internal: true
+services:
+  phpinfo-2:
+    deploy:
+      #podemos ponerlo replicated (varios contenedores en la misma vm) o global (unico contenedor x vm) 
+      mode: replicated
+      placement: 
+        constraints:
+        - node.role == worker
+      replicas: 2
+      resourcess: 
+        limits:
+          cpus: "0.1"
+          memory: 100m
+        reservations:
+          cpus: "0.1"
+          memory: 100m
+    expose:
+    - 8080
+    healthcheck:
+      interval: 10s
+      retrais: 3
+      start_period: 30s
+      test: php -r "print file_get_contents('http://localhost:8080/');"
+      timeout: 1s
+    image: Macarena-SRE/phpinfo-2:latest
+    networks:
+    - phpinfo-2
+    ports:
+    - 8080:8080
+version: "3.8"
