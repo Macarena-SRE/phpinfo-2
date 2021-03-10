@@ -1,0 +1,93 @@
+apiversion: apps/v1
+kind: Deployment
+metadata: 
+  name: phpinfo-2
+spec:
+  replicas: 2
+  selector: 
+    matchLabels:
+      app: phpinfo-2
+    template:
+      metadata:
+        labels:
+          app: phpinfo-2
+      spec:
+        containers:
+        - name: phpinfo-2
+          image: Macarena-SRE/phpinfo-2:latest
+          imagePullPolicy: Always
+          livenessProbe: 
+            tcpSocket: 
+              port: 8080
+            failureThreshold: 3
+            periodSeconds: 10
+            sucessThreshold: 1
+            timeoutSeconds: 1
+          ports:
+          - containerPort: 8080
+          readinessProbe: 
+            httpSocket: 
+              path: /
+              port: 8080
+            failureThreshold: 3
+            periodSeconds: 10
+            sucessThreshold: 1
+            timeoutSeconds: 1
+          resourcess:
+            limits:
+              cpu: 100m
+              memory: 100m
+            requests:
+              cpu: 100m
+              memory: 100m
+---
+#se capan todos los accesos
+apiversion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata: 
+  name: default-deny-all
+spec:
+  #se aplica a todos los pods
+  podSelector: 
+  #a todos los que intenten acceder
+  policyTypes: 
+  - Ingress
+  #si no se especifica reglas, deniega todo
+---
+#se abre acceso a nuestra aplicacion
+apiversion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata: 
+  name: phpinfo-2
+spec:
+  ingress:
+  - ports:
+    - port: 8080
+  #se aplica a los pods de nuestra aplicacion
+  podSelector:
+    matchLabels:
+      app: phpinfo-2
+  #a todos los que intenten acceder
+  policyTypes: 
+  - Ingress
+  #si no se especifica reglas, deniega todo
+---
+#creamos un servicio (balanceador hacia los pods)
+apiversion: v1
+kind: Service
+metadata: 
+  name: phpinfo-2
+spec:
+  ports:
+  - 8080
+    targetPort: 8080
+  selector:
+    app: phpinfo-2
+  #balanceador interno
+  type: ClusterIP
+---
+
+
+  
+  
+
