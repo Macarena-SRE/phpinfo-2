@@ -21,7 +21,7 @@ services:
     - 8080
     healthcheck:
       interval: 10s
-      retrais: 3
+      retries: 3
       start_period: 30s
       #test: php -r "print file_get_contents('http://localhost:8080/');"
       test: wget -q --spider http://localhost:8080
