@@ -23,5 +23,36 @@ jobs:
             sleep 10
             docker logs testcontainer 2>& 1 | grep 'PHP .* Development Server .* started' && break
           done
-          
-          
+  swarm: 
+    runs-on: ubuntu-18.04
+    steps:
+    - name: checkout
+      uses: actions/checkout@v2
+    - name: test
+      run: | 
+        set-x
+        project=phpinfo-2
+        #creo imagen image
+        docker build -t Macarena-SRE/${project}:testing .
+        docker swarm init
+        compose=etc/swarm/manifests/phpinfo-2.yaml
+        #sustituimos latest por testing y desplegamos con compose
+        sed -i /image:/s/latest/testing/ ${compose}
+        sed -i /node.role/s/worker/manager/ ${compose}
+        #despligue en openshift
+        #oc apply -f ${compose}
+        #despliegue en kubernetes
+        #kubectl apply - f ${compose}
+        #despliegue en swarm
+        docker stack deploy -c ${compose} ${project}
+        while true 
+          do \
+            sleep 10
+            #comprobamos que sale un mensaje diciendo que 3/3 nodos se han levantado
+            docker service ls  | grep "${project}.*\([0-9]\)/\1"
+          done
+        while true
+          do \
+            sleep 10
+            docker service logs ${project}_${project} 2>& 1 | grep 'PHP .* Development Server .* started' && break
+          done
