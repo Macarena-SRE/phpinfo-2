@@ -30,7 +30,7 @@ jobs:
       uses: actions/checkout@v2
     - name: test
       run: | 
-        set-x
+        set -x
         #creo imagen image
         docker build -t Macarena-SRE/phpinfo-2:testing .
         docker swarm init
