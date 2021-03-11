@@ -48,10 +48,10 @@ jobs:
         while true 
           do \
             sleep 10
-            docker service ls  | grep "${project}.*\([0-9]\)/\1"
+            docker service ls | grep "${project}.*\([0-9]\)/\1" && break
           done
         while true
           do \
             sleep 10
-            docker service logs ${project}_${project} 2>& 1 | grep 'PHP .* Development Server .* started' && break
-          done
+            docker service logs ${project}_${project} 2>& 1 | grep 'PHP .* Development Server .* started' && break 
+          done   
