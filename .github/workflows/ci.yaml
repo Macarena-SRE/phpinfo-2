@@ -48,7 +48,6 @@ jobs:
         while true 
           do \
             sleep 10
-            #comprobamos que sale un mensaje diciendo que 3/3 nodos se han levantado
             docker service ls  | grep "${project}.*\([0-9]\)/\1"
           done
         while true
