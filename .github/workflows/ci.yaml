@@ -31,10 +31,10 @@ jobs:
     - name: test
       run: | 
         set-x
-        project=phpinfo-2
         #creo imagen image
-        docker build -t Macarena-SRE/${project}:testing .
+        docker build -t Macarena-SRE/phpinfo-2:testing .
         docker swarm init
+        project=phpinfo-2
         compose=etc/swarm/manifests/phpinfo-2.yaml
         #sustituimos latest por testing y desplegamos con compose
         sed -i /image:/s/latest/testing/ ${compose}
