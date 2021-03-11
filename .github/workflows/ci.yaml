@@ -23,16 +23,16 @@ jobs:
             sleep 10
             docker logs testcontainer 2>& 1 | grep 'PHP .* Development Server .* started' && break
           done
-  swarm: 
+  swarm:
     runs-on: ubuntu-18.04
     steps:
     - name: checkout
       uses: actions/checkout@v2
     - name: test
-      run: | 
+      run: |
         set -x
         #creo imagen image
-        docker build -t macarena-sre/phpinfo-2:testing .
+        docker build -t macarenasre/phpinfo-2:testing .
         docker swarm init
         project=phpinfo-2
         compose=etc/swarm/manifests/${project}.yaml
@@ -54,5 +54,4 @@ jobs:
           do \
             sleep 10
             docker service logs ${project}_${project} 2>& 1 | grep 'PHP .* Development Server .* started' && break 
-          done
-          
+          done          
