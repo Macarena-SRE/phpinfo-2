@@ -25,14 +25,6 @@ spec:
           timeoutSeconds: 1
         ports:
         - containerPort: 8080
-#        readinessProbe:
-#          httpGet:
-#            path: /
-#            port: 8080
-#          failureThreshold: 3
-#          periodSeconds: 10
-#          successThreshold: 1
-#          timeoutSeconds: 1
         resources:
           limits:
             cpu: 100m
@@ -40,7 +32,6 @@ spec:
           requests:
             cpu: 100m
             memory: 100M
----
 #se capan todos los accesos
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
@@ -48,12 +39,11 @@ metadata:
   name: default-deny-all
 spec:
   #se aplica a todos los pods
-  podSelector: 
+  podSelector: {}
   #a todos los que intenten acceder
   policyTypes: 
   - Ingress
   #si no se especifica reglas, deniega todo
----
 #se abre acceso a nuestra aplicacion
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
@@ -70,7 +60,6 @@ spec:
   #a todos los que intenten acceder
   policyTypes: 
   - Ingress
----
 #creamos un servicio (balanceador hacia los pods)
 apiVersion: v1
 kind: Service
@@ -84,7 +73,6 @@ spec:
     app: phpinfo-2
   #balanceador interno
   type: ClusterIP
----
 
 
   
